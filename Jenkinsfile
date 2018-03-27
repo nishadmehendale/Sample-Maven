@@ -61,7 +61,7 @@ pipeline {
             steps { 
 
                     withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '7943607d-b421-4237-bc45-c7cef3fb3904', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '3fe48069-4cee-45a6-bf59-f88a5e633963', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                             ]){     
 
                                     sh """(
