@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mock="http://www.mulesoft.org/schema/mule/mock" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd">
+    <munit:config name="munit" doc:name="MUnit configuration"/>
+    <spring:beans>
+        <spring:import resource="classpath:implementation.xml"/>
+        <spring:import resource="classpath:global.xml"/>
+    </spring:beans>
+    <munit:test name="apdev-flights-test-suite-getFlightsFlowTest" description="Test">
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_Set_Airline_Variable">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Set airline variable']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['']"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_setCodeSubFlow">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Set airport code']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['']"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_United_REST_Req">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['United REST Request']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['{&quot;flights&quot;:[{&quot;code&quot;:&quot;mocktest&quot;,&quot;price&quot;:400,&quot;origin&quot;:&quot;MUA&quot;,&quot;destination&quot;:&quot;SFO&quot;,&quot;departureDate&quot;:&quot;2015/03/20&quot;,&quot;planeType&quot;:&quot;Boeing 737&quot;,&quot;airlineName&quot;:&quot;United&quot;,&quot;emptySeats&quot;:0},{&quot;code&quot;:&quot;ER39rk&quot;,&quot;price&quot;:945,&quot;origin&quot;:&quot;MUA&quot;,&quot;destination&quot;:&quot;SFO&quot;,&quot;departureDate&quot;:&quot;2015/09/11&quot;,&quot;planeType&quot;:&quot;Boeing 757&quot;,&quot;airlineName&quot;:&quot;United&quot;,&quot;emptySeats&quot;:54},{&quot;code&quot;:&quot;ER39rj&quot;,&quot;price&quot;:954,&quot;origin&quot;:&quot;MUA&quot;,&quot;destination&quot;:&quot;SFO&quot;,&quot;departureDate&quot;:&quot;2015/02/12&quot;,&quot;planeType&quot;:&quot;Boeing 777&quot;,&quot;airlineName&quot;:&quot;United&quot;,&quot;emptySeats&quot;:23}]}']" mimeType="application/json"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_American_REST_Req">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['American REST Request']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['[{&quot;ID&quot;: 5,&quot;code&quot;: &quot;mocktest&quot;,&quot;price&quot;: 142,&quot;departureDate&quot;: &quot;2016-02-11T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 1,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 7,&quot;code&quot;: &quot;eefd1994&quot;,&quot;price&quot;: 676,&quot;departureDate&quot;: &quot;2016-01-01T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 0,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 777&quot;,&quot;totalSeats&quot;: 300}},{&quot;ID&quot;: 8,&quot;code&quot;: &quot;ffee2000&quot;,&quot;price&quot;: 300,&quot;departureDate&quot;: &quot;2016-02-20T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 30,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 9,&quot;code&quot;: &quot;eefd3000&quot;,&quot;price&quot;: 900,&quot;departureDate&quot;: &quot;2016-02-01T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 0,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 11,&quot;code&quot;: &quot;rree4567&quot;,&quot;price&quot;: 456,&quot;departureDate&quot;: &quot;2016-01-20T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 100,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}}]']" mimeType="application/json"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_Delta_SOAP_Req">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Delta SOAP Request']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;ns2:findFlightResponse xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:ns2=&quot;http://soap.training.mulesoft.com/&quot;&gt;&lt;return&gt;&lt;airlineName&gt;Delta&lt;/airlineName&gt;&lt;code&gt;MOCKTEST&lt;/code&gt;&lt;departureDate&gt;2015/03/20&lt;/departureDate&gt;&lt;destination&gt;SFO&lt;/destination&gt;&lt;emptySeats&gt;40&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 737&lt;/planeType&gt;&lt;price&gt;400.0&lt;/price&gt;&lt;/return&gt;&lt;return&gt;&lt;airlineName&gt;Delta&lt;/airlineName&gt;&lt;code&gt;A1BTT4&lt;/code&gt;&lt;departureDate&gt;2015/02/12&lt;/departureDate&gt;&lt;destination&gt;SFO&lt;/destination&gt;&lt;emptySeats&gt;30&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 777&lt;/planeType&gt;&lt;price&gt;593.0&lt;/price&gt;&lt;/return&gt;&lt;return&gt;&lt;airlineName&gt;Delta&lt;/airlineName&gt;&lt;code&gt;A14244&lt;/code&gt;&lt;departureDate&gt;2015/02/12&lt;/departureDate&gt;&lt;destination&gt;SFO&lt;/destination&gt;&lt;emptySeats&gt;10&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 787&lt;/planeType&gt;&lt;price&gt;294.0&lt;/price&gt;&lt;/return&gt;&lt;/ns2:findFlightResponse&gt;']" mimeType="application/xml"/>
+        </mock:when>
+        <expression-component doc:name="setCode"><![CDATA[flowVars.code="SFO";]]></expression-component>
+        <flow-ref name="getFlightsFlow" doc:name="getFlightsFlow"/>
+    </munit:test>
+    <munit:test name="apdev-flights-test-suite-getAmericanFlightsFlowTest" description="Test">
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_Set_Airline_Variable">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Set airline variable']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['']"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_setCodeSubFlow">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Set airport code']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['']"/>
+        </mock:when>
+        <mock:when messageProcessor=".*:.*" doc:name="Mock_American_REST_Req">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['American REST Request']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#['[{&quot;ID&quot;: 5,&quot;code&quot;: &quot;mocktest&quot;,&quot;price&quot;: 142,&quot;departureDate&quot;: &quot;2016-02-11T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 1,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 7,&quot;code&quot;: &quot;eefd1994&quot;,&quot;price&quot;: 676,&quot;departureDate&quot;: &quot;2016-01-01T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 0,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 777&quot;,&quot;totalSeats&quot;: 300}},{&quot;ID&quot;: 8,&quot;code&quot;: &quot;ffee2000&quot;,&quot;price&quot;: 300,&quot;departureDate&quot;: &quot;2016-02-20T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 30,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 9,&quot;code&quot;: &quot;eefd3000&quot;,&quot;price&quot;: 900,&quot;departureDate&quot;: &quot;2016-02-01T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 0,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}},{&quot;ID&quot;: 11,&quot;code&quot;: &quot;rree4567&quot;,&quot;price&quot;: 456,&quot;departureDate&quot;: &quot;2016-01-20T00:00:00&quot;,&quot;origin&quot;: &quot;MUA&quot;,&quot;destination&quot;: &quot;SFO&quot;,&quot;emptySeats&quot;: 100,&quot;plane&quot;: {&quot;type&quot;: &quot;Boeing 737&quot;,&quot;totalSeats&quot;: 150}}]']" mimeType="application/json"/>
+        </mock:when>
+        <expression-component doc:name="setCodeAndAirline"><![CDATA[flowVars.code="SFO";
+flowVars.airline= "american";]]></expression-component>
+        <flow-ref name="getFlightsFlow" doc:name="getFlightsFlow"/>
+    </munit:test>
+    <munit:test name="apdev-flights-test-suite-postFlightsFlowTest" description="Test">
+        <set-payload value="#['{&quot;airline&quot;: &quot;United&quot;,&quot;flightCode&quot;: &quot;MockTest&quot;,&quot;fromAirportCode&quot;: &quot;LAX&quot;,&quot;toAirportCode&quot;: &quot;SFO&quot;,&quot;departureDate&quot;: &quot;May 21, 2016&quot;,&quot;emptySeats&quot;: 0,&quot;totalSeats&quot;: 200,&quot;price&quot;: 199,&quot;planeType&quot;: &quot;Boeing 737&quot;}']" mimeType="application/json" doc:name="Set Payload"/>
+        <flow-ref name="postFlightFlow" doc:name="postFlightFlow"/>
+    </munit:test>
+    <munit:test name="apdev-flights-test-suite-postMultipleFlightsFlowTest" description="Test">
+        <set-payload value="#['&lt;ns2:listAllFlightsResponse xmlns:ns2=&quot;http://soap.training.mulesoft.com/&quot;&gt;&lt;return airlineName=&quot;United&quot;&gt;&lt;code&gt;A1B2C3&lt;/code&gt;&lt;departureDate&gt;2015/10/20&lt;/departureDate&gt;&lt;destination&gt;SFO&lt;/destination&gt;&lt;emptySeats&gt;40&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 737&lt;/planeType&gt;&lt;price&gt;400.0&lt;/price&gt;&lt;/return&gt;&lt;return airlineName=&quot;Delta&quot;&gt;&lt;code&gt;A1B2C4&lt;/code&gt;&lt;departureDate&gt;2015/10/21&lt;/departureDate&gt;&lt;destination&gt;LAX&lt;/destination&gt;&lt;emptySeats&gt;10&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 737&lt;/planeType&gt;&lt;price&gt;199.99&lt;/price&gt;&lt;/return&gt;&lt;return airlineName=&quot;Delta&quot;&gt;&lt;code&gt;AFFFC5&lt;/code&gt;&lt;departureDate&gt;2015/10/21&lt;/departureDate&gt;&lt;destination&gt;PDX&lt;/destination&gt;&lt;emptySeats&gt;30&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 777&lt;/planeType&gt;&lt;price&gt;283.0&lt;/price&gt;&lt;/return&gt;&lt;return airlineName=&quot;Delta&quot;&gt;&lt;code&gt;AFFFC4&lt;/code&gt;&lt;departureDate&gt;2015/10/20&lt;/departureDate&gt;&lt;destination&gt;PDX&lt;/destination&gt;&lt;emptySeats&gt;0&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 777&lt;/planeType&gt;&lt;price&gt;283.0&lt;/price&gt;&lt;/return&gt;&lt;return airlineName=&quot;Delta&quot;&gt;&lt;code&gt;AFFFC3&lt;/code&gt;&lt;departureDate&gt;2015/10/20&lt;/departureDate&gt;&lt;destination&gt;PDX&lt;/destination&gt;&lt;emptySeats&gt;23&lt;/emptySeats&gt;&lt;origin&gt;MUA&lt;/origin&gt;&lt;planeType&gt;Boing 777&lt;/planeType&gt;&lt;price&gt;283.0&lt;/price&gt;&lt;/return&gt;&lt;/ns2:listAllFlightsResponse&gt;']" mimeType="application/xml" doc:name="Set Payload"/>
+        <flow-ref name="postMultipleFlightsFlow" doc:name="postMultipleFlightsFlow"/>
+    </munit:test>
+    
+</mule>
