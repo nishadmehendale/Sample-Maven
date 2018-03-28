@@ -65,7 +65,7 @@ pipeline {
                             ]){     
                                     
                                     sh """(
-                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                                    git remote set-url origin https://cfsintna:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
                                     git config --global user.email "dinesh.angne@capgemini.com"
                                     git config --global user.name ${GIT_USER}
                                     git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
