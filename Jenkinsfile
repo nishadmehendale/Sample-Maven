@@ -63,9 +63,10 @@ pipeline {
                     withCredentials([
                         [$class: 'UsernamePasswordMultiBinding', credentialsId: 'e1d83a1e-cddb-41af-840b-2f46d44c41dd', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                             ]){     
-                                    
+                                    //git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
                                     sh """(
                                     git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                                    git config --global user.email "vrnvikas1994@gmail.com"
                                     git config --global user.name ${GIT_USER}
                                     git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
                                     git push --force origin refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}:refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}
