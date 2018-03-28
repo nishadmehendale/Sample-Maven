@@ -61,9 +61,9 @@ pipeline {
             steps { 
 
                     withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '3fe48069-4cee-45a6-bf59-f88a5e633963', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'e1d83a1e-cddb-41af-840b-2f46d44c41dd', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                             ]){     
-                                    //git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                                    
                                     sh """(
                                     git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
                                     git config --global user.email "dinesh.angne@capgemini.com"
