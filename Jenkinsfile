@@ -19,29 +19,29 @@ pipeline {
             }
         }
 
-        stage('munit') {
+        // stage('munit') {
 
-            steps {
+        //     steps {
                  
-               sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
-                junit '**/target/*-reports/TEST-*.xml'
-                step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
-            }
-         }
+        //        sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
+        //         junit '**/target/*-reports/TEST-*.xml'
+        //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
+        //     }
+        //  }
          
 
-        // stage('Sonar') {
-        //     steps {
-        //         sh "mvn sonar:sonar -Dsonar.host.url=${env.SONARQUBE_HOST}"
-        //     }
-        // }
-
-        stage('publish munit result') {
+        stage('Sonar') {
             steps {
-
-                publish_html()
+                sh "mvn sonar:sonar -Dsonar.host.url=${env.SONARQUBE_HOST}"
             }
         }
+
+        // stage('publish munit result') {
+        //     steps {
+
+        //         publish_html()
+        //     }
+        // }
 
         stage('push to artifactory') {
             steps {
@@ -57,7 +57,7 @@ pipeline {
             steps { 
 
                     withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '4588a0da-4c31-40d8-b91c-2a30d2a7e694', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                             ]){     
                                     sh """(
                                     git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
@@ -77,7 +77,7 @@ pipeline {
             steps { 
                 script {
   
-                    sshagent (credentials: ['d25ad830-c55e-4bfa-8ebd-c99441fdcfe7']) {
+                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
                     sh "ssh -o StrictHostKeyChecking=no -l ec2-user ec2-35-172-114-35.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT"
                 }
            }
