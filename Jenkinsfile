@@ -82,7 +82,7 @@ pipeline {
                 script {
   
                     sshagent (credentials: ['d25ad830-c55e-4bfa-8ebd-c99441fdcfe7']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l ec2-user ec2-35-172-114-35.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT'
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ec2-35-172-114-35.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT"
                 }
            }
        }
