@@ -28,7 +28,7 @@ pipeline {
         //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
         //     }
         //  }
-         
+
 
         // stage('Sonar') {
         //     steps {
@@ -78,7 +78,7 @@ pipeline {
                 script {
   
                     sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
-                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ec2-34-226-247-45.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT"
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ec2-34-226-247-45.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ec2-34-226-247-45.compute-1.amazonaws.com"
                 }
            }
        }
