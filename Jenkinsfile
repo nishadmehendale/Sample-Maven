@@ -61,7 +61,7 @@ pipeline {
             steps { 
 
                     withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '421f3008-3cce-408b-b1ff-f8f771998035', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '4588a0da-4c31-40d8-b91c-2a30d2a7e694', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                             ]){     
                                     //git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
                                     sh """(
