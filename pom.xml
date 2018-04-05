@@ -30,6 +30,11 @@
             <url>${artifactory_url}</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
+        <repository>
+        <id>central</id>
+        <name>ip-172-31-89-57-releases</name>
+        <url>http://ec2-35-174-139-96.compute-1.amazonaws.com:8081/artifactory/libs-release-local</url>
+    </repository>
     </distributionManagement>
 
 <!-- <distributionManagement>
