@@ -24,12 +24,12 @@
     </properties>
 
     <distributionManagement>
-        <snapshotRepository>
+<!--         <snapshotRepository>
             <id>snapshots</id>
             <name>${artifactory_name}</name>
             <url>${artifactory_url}</url>
             <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
+        </snapshotRepository> -->
         <repository>
         <id>central</id>
         <name>ip-172-31-89-57-releases</name>
