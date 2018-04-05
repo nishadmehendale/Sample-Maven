@@ -50,13 +50,13 @@ pipeline {
             steps {
 
 
-                echo 'I only execute on the master branch'
+                
 
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
 
-                
+
             // script{
             //    if (env.BRANCH_NAME == 'master') {
             //         echo 'I only execute on the master branch'
