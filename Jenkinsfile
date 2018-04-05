@@ -19,15 +19,15 @@ pipeline {
             }
         }
 
-        // stage('munit') {
+        stage('munit') {
 
-        //     steps {
+            steps {
                  
-        //        sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
-        //         junit '**/target/*-reports/TEST-*.xml'
-        //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
-        //     }
-        //  }
+               sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
+                junit '**/target/*-reports/TEST-*.xml'
+                step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
+            }
+         }
 
 
         // stage('Sonar') {
