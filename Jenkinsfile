@@ -48,19 +48,10 @@ pipeline {
 
             script{
 
-                                        withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
-                            ]){     
-                                    sh """(
-                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
-                                    git config --global user.email 'vrnvikas1994@gmail.com'
-                                    git config --global user.name ${GIT_USER}
-                                    git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/* --prune
-                                    )"""
-                                }
 
 
 
+                    fetch_tags()
 
 
 
@@ -183,4 +174,20 @@ def publish_html()
         reportName: "Coverage Report" ])
     } 
         
+}
+
+
+def fetch_tags(){
+
+                                        withCredentials([
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                            ]){     
+                                    sh """(
+                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                                    git config --global user.email 'vrnvikas1994@gmail.com'
+                                    git config --global user.name ${GIT_USER}
+                                    git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/* --prune
+                                    )"""
+                                }
+
 }
