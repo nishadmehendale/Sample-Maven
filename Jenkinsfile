@@ -46,43 +46,26 @@ pipeline {
 
             steps {
 
-
-                    withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
-                        ]){     
-                                sh """(
-                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
-                                    git config --global user.email 'vrnvikas1994@gmail.com'
-                                    git config --global user.name ${GIT_USER}
-                                    git rev-list --tags --max-count=1
-                                    )"""
-                                }
+            script{
+               if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
 
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
 
+                } else if (env.BRANCH_NAME == 'develop') {
+                    echo 'I only execute on the develop branch'
 
-            // script{
-            //    if (env.BRANCH_NAME == 'master') {
-            //         echo 'I only execute on the master branch'
+                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    }
+                }
+                else {
+                    echo 'I execute elsewhere'
+                }
 
-            //         configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-            //         sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-            //         }
-
-            //     } else if (env.BRANCH_NAME == 'develop') {
-            //         echo 'I only execute on the develop branch'
-
-            //         configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-            //         sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-            //         }
-            //     }
-            //     else {
-            //         echo 'I execute elsewhere'
-            //     }
-
-            // }
+            }
 
             }
         }
