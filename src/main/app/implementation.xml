@@ -40,12 +40,7 @@ payload orderBy $.price]]></dw:set-payload>
     </flow>
     <flow name="implementationFlow">
         <http:listener config-ref="mua-flights-api-httpListenerConfig" path="/heartbeat" allowedMethods="GET" doc:name="HTTP"/>
-        <set-payload value="{&quot;response&quot;: {
-  &quot;api&quot;: &quot;apdev-flight-ws&quot;,
-  &quot;code&quot;: &quot;2000&quot;,
-  &quot;status&quot;: &quot;up&quot;,
-  &quot;message&quot;: &quot;Application is up and running&quot;,
-}}" mimeType="application/json" doc:name="Set Payload"/>
+        <set-payload value="{&quot;response&quot;: {   &quot;api&quot;: &quot;apdev-flight-ws&quot;,   &quot;code&quot;: &quot;2000&quot;,   &quot;status&quot;: &quot;green&quot;,   &quot;message&quot;: &quot;Application is up and running&quot;, }}" mimeType="application/json" doc:name="Set Payload"/>
         <logger message="health check flow" level="INFO" doc:name="Logger"/>
     </flow>
     <sub-flow name="setCodeSubflow">
