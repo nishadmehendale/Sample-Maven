@@ -36,12 +36,12 @@ pipeline {
         //     }
         // }
 
-        // stage('publish munit result') {
-        //     steps {
+        stage('publish munit result') {
+            steps {
 
-        //         publish_html()
-        //     }
-        // }
+                publish_html()
+            }
+        }
 
         stage('push to artifactory') {
             steps {
