@@ -48,7 +48,8 @@ pipeline {
         stage('push to artifactory') {
             steps {
 
-                if (env.BRANCH_NAME == 'master') {
+                script{
+               if (env.BRANCH_NAME == 'master') {
                     echo 'I only execute on the master branch'
 
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
@@ -67,6 +68,8 @@ pipeline {
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
+                }
+
                 }
 
             }
