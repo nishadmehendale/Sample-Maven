@@ -78,7 +78,7 @@ pipeline {
                 script {
   
                     sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
-                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ec2-54-172-22-145.compute-1.amazonaws.com ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ec2-54-152-14-20.compute-1.amazonaws.com"
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
                     logstashSend failBuild: true
                 }
            }
