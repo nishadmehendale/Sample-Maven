@@ -64,24 +64,24 @@ pipeline {
 
 
 
-               // if (env.BRANCH_NAME == 'master') {
-               //      echo 'I only execute on the master branch'
+               if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
 
-               //      configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-               //      sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-               //      }
+                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    }
 
-               //  } else if (env.BRANCH_NAME == 'develop') {
-               //      echo 'I only execute on the develop branch'
+                } else if (env.BRANCH_NAME == 'develop') {
+                    echo 'I only execute on the develop branch'
 
 
-               //      configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-               //      sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-               //      }
-               //  }
-               //  else {
-               //      echo 'I execute elsewhere'
-               //  }
+                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    }
+                }
+                else {
+                    echo 'I execute elsewhere'
+                }
 
             }
 
