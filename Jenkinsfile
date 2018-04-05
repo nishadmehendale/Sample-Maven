@@ -57,6 +57,7 @@ pipeline {
                 } else if (env.BRANCH_NAME == 'develop') {
                     echo 'I only execute on the develop branch'
 
+                    sh "git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/* --prune"
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
@@ -120,6 +121,7 @@ String gitTagName() {
 
 /** @return The tag version */
 String gitTagLatest() {
+
     sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
     longTag = sh(script: "git describe --tags ${sha}", returnStdout: true)?.trim()
 
