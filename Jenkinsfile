@@ -71,36 +71,36 @@ pipeline {
         }
 
 
-        stage('tag the build') {
-            steps { 
+        // stage('tag the build') {
+        //     steps { 
 
-                    withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
-                            ]){     
-                                    sh """(
-                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
-                                    git config --global user.email 'vrnvikas1994@gmail.com'
-                                    git config --global user.name ${GIT_USER}
-                                    git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
-                                    git push --force origin refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}:refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}
-                                    )"""
-                                }
+        //             withCredentials([
+        //                 [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+        //                     ]){     
+        //                             sh """(
+        //                             git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+        //                             git config --global user.email 'vrnvikas1994@gmail.com'
+        //                             git config --global user.name ${GIT_USER}
+        //                             git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
+        //                             git push --force origin refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}:refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}
+        //                             )"""
+        //                         }
                                 
 
-            }
-        }
+        //     }
+        // }
 
 
-         stage('deploy app'){
-            steps { 
-                script {
+       //   stage('deploy app'){
+       //      steps { 
+       //          script {
   
-                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
-                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
-                    logstashSend failBuild: true
-                }
-           }
-       }
+       //              sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+       //              sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
+       //              logstashSend failBuild: true
+       //          }
+       //     }
+       // }
 
  
         }        
