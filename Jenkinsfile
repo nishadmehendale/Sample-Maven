@@ -84,7 +84,7 @@ pipeline {
            }
        }
 
-       stage('deploy app'){
+       stage('logstash Send'){
             steps { 
                 logstashSend failBuild: true
             }
