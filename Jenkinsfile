@@ -46,9 +46,10 @@ pipeline {
         }
 
         stage('push to artifactory') {
+
             steps {
 
-                script{
+            step{
                if (env.BRANCH_NAME == 'master') {
                     echo 'I only execute on the master branch'
 
@@ -58,19 +59,16 @@ pipeline {
 
                 } else if (env.BRANCH_NAME == 'develop') {
                     echo 'I only execute on the develop branch'
+
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
                 }
                 else {
                     echo 'I execute elsewhere'
-                    echo 'I only execute on the develop branch'
-                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-                    }
                 }
 
-                }
+            }
 
             }
         }
@@ -78,6 +76,7 @@ pipeline {
 
         // stage('tag the build') {
         //     steps { 
+
 
         //             withCredentials([
         //                 [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
@@ -103,11 +102,9 @@ pipeline {
        //              sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
        //              sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
        //              logstashSend failBuild: true
+       //              }
        //          }
-       //     }
-       // }
-
- 
+       //      }
        // }        
         
     }
