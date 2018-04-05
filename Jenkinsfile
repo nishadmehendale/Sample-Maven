@@ -47,7 +47,16 @@ pipeline {
             steps {
 
 
-                    sh "git describe --tags"
+                    withCredentials([
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                        ]){     
+                                sh """(
+                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                                    git config --global user.email 'vrnvikas1994@gmail.com'
+                                    git config --global user.name ${GIT_USER}
+                                    git rev-list --tags --max-count=1
+                                    )"""
+                                }
 
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
@@ -128,8 +137,8 @@ String gitTagName() {
 
 /** @return The tag version */
 String gitTagLatest() {
-    //sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
-    longTag = sh(script: "git describe --tags", returnStdout: true)?.trim()
+    sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
+    longTag = sh(script: "git describe --tags ${sha}", returnStdout: true)?.trim()
 
     shortTag = longTag.substring(0,longTag.lastIndexOf("."))
     return shortTag
