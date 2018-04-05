@@ -22,9 +22,7 @@ pipeline {
         }
 
         // stage('munit') {
-
         //     steps {
-                 
         //        sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
         //         junit '**/target/*-reports/TEST-*.xml'
         //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
@@ -40,7 +38,6 @@ pipeline {
 
         // stage('publish munit result') {
         //     steps {
-
         //         publish_html()
         //     }
         // }
@@ -50,7 +47,7 @@ pipeline {
             steps {
 
 
-                
+
 
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
                     sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
@@ -131,8 +128,8 @@ String gitTagName() {
 
 /** @return The tag version */
 String gitTagLatest() {
-    sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
-    longTag = sh(script: "git describe --tags ${sha}", returnStdout: true)?.trim()
+    //sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
+    longTag = sh(script: "git describe --tags", returnStdout: true)?.trim()
 
     shortTag = longTag.substring(0,longTag.lastIndexOf("."))
     return shortTag
