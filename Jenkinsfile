@@ -7,6 +7,8 @@ pipeline {
     }
     
     stages {
+
+
         stage('download_stash_code') {
             steps {
                 checkout scm
@@ -103,7 +105,7 @@ pipeline {
        // }
 
  
-        }        
+       // }        
         
     }
     
