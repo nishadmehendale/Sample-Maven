@@ -7,6 +7,8 @@ pipeline {
     }
     
     stages {
+
+
         stage('download_stash_code') {
             steps {
                 checkout scm
@@ -19,20 +21,14 @@ pipeline {
             }
         }
 
-        // stage('munit') {
+        stage('munit') {
+            steps {
+               sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
+                junit '**/target/*-reports/TEST-*.xml'
+                step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
+            }
+         }
 
-        //     steps {
-                 
-
-        //        sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
-        //         junit '**/target/*-reports/TEST-*.xml'
-        //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
-
-
-        //     }
-
-
-        // }
 
         // stage('Sonar') {
         //     steps {
@@ -40,40 +36,74 @@ pipeline {
         //     }
         // }
 
-        // stage('publish munit result') {
-        //     steps {
-
-        //         publish_html()
-        //     }
-        // }
-
-        stage('push to artifactory') {
+        stage('publish munit result') {
             steps {
-
-                configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
-                }
+                publish_html()
             }
         }
 
+        stage('push to artifactory') {
 
-        stage('tag the build') {
-            steps { 
+            steps {
 
-                    withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: '7943607d-b421-4237-bc45-c7cef3fb3904', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
-                            ]){     
+            script{
+                
+                fetch_tags()
 
-                                    sh """(
-                                    git remote set-url origin https://${GIT_USER}:${GIT_PASS}@github.com/${GIT_USER}/app-dev-flights-ubuntu-ws.git
-                                    git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
-                                    git push --force origin refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}:refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}
-                                    )"""
-                                }
-                                
+               if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
+                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    }
+
+                    echo 'tagging build'
+                    tag_build();
+
+                } else if (env.BRANCH_NAME == 'develop') {
+                    echo 'I only execute on the develop branch'
+                    configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=1.0.0 -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    }
+
+                }
+                else {
+                    echo 'I execute elsewhere'
+                }
 
             }
-        }        
+
+            }
+        }
+
+         stage('deploy app'){
+            steps { 
+                script {
+                    
+
+                if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
+                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_PROD} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
+                    
+                    }
+
+                } else if (env.BRANCH_NAME == 'develop') {
+                    echo 'I only execute on the develop branch'
+                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_DEV} ./download_artifact.sh 1.0.0-SNAPSHOT ${env.ARTIFACTORY_URL}"
+                    
+                    }
+
+                }
+                else {
+                    echo 'I execute elsewhere'
+                }
+
+                    logstashSend failBuild: true
+                    
+                }
+            }
+       }        
         
     }
     
@@ -91,10 +121,11 @@ String gitTagName() {
 
 /** @return The tag version */
 String gitTagLatest() {
-    sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
-    desc = sh(script: "git describe --tags ${sha}", returnStdout: true)?.trim()
 
-    shortTag = desc.substring(0,desc.lastIndexOf("."))
+    sha = sh(script: "git rev-list --tags --max-count=1", returnStdout: true)?.trim()
+    longTag = sh(script: "git describe --tags ${sha}", returnStdout: true)?.trim()
+
+    shortTag = longTag.substring(0,longTag.lastIndexOf("."))
     return shortTag
 }
  
@@ -135,4 +166,35 @@ def publish_html()
         reportName: "Coverage Report" ])
     } 
         
+}
+
+
+def fetch_tags(){
+
+    withCredentials([
+        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+            ]){     
+                sh """(
+                        git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                        git config --global user.email 'vrnvikas1994@gmail.com'
+                        git config --global user.name ${GIT_USER}
+                        git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/* --prune
+                        )"""
+                }
+
+}
+
+
+def tag_build(){
+        withCredentials([
+            [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+                ]){     
+                    sh """(
+                            git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
+                            git config --global user.email 'vrnvikas1994@gmail.com'
+                            git config --global user.name ${GIT_USER}
+                            git tag -a ${gitTagLatest()}.${env.BUILD_NUMBER} -m 'build-${env.BUILD_NUMBER}'
+                            git push --force origin refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}:refs/tags/${gitTagLatest()}.${env.BUILD_NUMBER}
+                            )"""
+                     }
 }

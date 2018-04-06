@@ -19,16 +19,6 @@
       <attribute value="test" name="org.mule.tooling.scope"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar">
-    <attributes>
-      <attribute value="test" name="org.mule.tooling.scope"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/4.10/junit-4.10.jar">
-    <attributes>
-      <attribute value="test" name="org.mule.tooling.scope"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/mockito/mockito-all/1.8.2/mockito-all-1.8.2.jar">
     <attributes>
       <attribute value="test" name="org.mule.tooling.scope"/>
