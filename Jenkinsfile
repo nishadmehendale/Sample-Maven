@@ -21,13 +21,13 @@ pipeline {
             }
         }
 
-        // stage('munit') {
-        //     steps {
-        //        sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
-        //         junit '**/target/*-reports/TEST-*.xml'
-        //         step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
-        //     }
-        //  }
+        stage('munit') {
+            steps {
+               sh 'mvn -U clean test cobertura:cobertura -Dcobertura.report.format=xml'
+                junit '**/target/*-reports/TEST-*.xml'
+                step([$class: 'CoberturaPublisher', coberturaReportFile: 'target/site/cobertura/coverage.xml'])
+            }
+         }
 
 
         // stage('Sonar') {
@@ -36,11 +36,11 @@ pipeline {
         //     }
         // }
 
-        // stage('publish munit result') {
-        //     steps {
-        //         publish_html()
-        //     }
-        // }
+        stage('publish munit result') {
+            steps {
+                publish_html()
+            }
+        }
 
         stage('push to artifactory') {
 
@@ -62,7 +62,7 @@ pipeline {
                 } else if (env.BRANCH_NAME == 'develop') {
                     echo 'I only execute on the develop branch'
                     configFileProvider([configFile(fileId: 'our_settings', variable: 'SETTINGS')]) {
-                    sh "mvn -s $SETTINGS deploy -DskipTests -DrepositoryId=central -Dbuild.version=${gitTagLatest()}.${env.BUILD_NUMBER} -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
+                    sh "mvn -s $SETTINGS deploy -DskipTests -Dbuild.version=1.0.0 -Dartifactory_url=${env.ARTIFACTORY_URL} -Dartifactory_name=${env.ARTIFACTORY_NAME}"
                     }
 
                 }
@@ -75,17 +75,35 @@ pipeline {
             }
         }
 
-       //   stage('deploy app'){
-       //      steps { 
-       //          script {
-  
-       //              sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
-       //              sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
-       //              logstashSend failBuild: true
-       //              }
-       //          }
-       //      }
-       // }        
+         stage('deploy app'){
+            steps { 
+                script {
+                    
+
+                if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
+                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_PROD} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
+                    
+                    }
+
+                } else if (env.BRANCH_NAME == 'develop') {
+                    echo 'I only execute on the develop branch'
+                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_DEV} ./download_artifact.sh 1.0.0-SNAPSHOT ${env.ARTIFACTORY_URL}"
+                    
+                    }
+
+                }
+                else {
+                    echo 'I execute elsewhere'
+                }
+
+                    logstashSend failBuild: true
+                    
+                }
+            }
+       }        
         
     }
     
