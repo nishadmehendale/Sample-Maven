@@ -82,14 +82,14 @@ pipeline {
 
                 if (env.BRANCH_NAME == 'master') {
                     echo 'I only execute on the master branch'
-                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sshagent (credentials: ['MULE_DEV_ACCESS']) {
                     sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_PROD} ./download_artifact.sh ${gitTagLatest()}.${env.BUILD_NUMBER}-SNAPSHOT ${env.ARTIFACTORY_URL}"
                     
                     }
 
                 } else if (env.BRANCH_NAME == 'develop') {
                     echo 'I only execute on the develop branch'
-                    sshagent (credentials: ['712e5b00-8e63-4237-9065-c69ef3e4cae9']) {
+                    sshagent (credentials: ['MULE_DEV_ACCESS']) {
                     sh "ssh -o StrictHostKeyChecking=no -l ec2-user ${env.MULE_SERVER_DEV} ./download_artifact.sh 1.0.0-SNAPSHOT ${env.ARTIFACTORY_URL}"
                     
                     }
@@ -172,7 +172,7 @@ def publish_html()
 def fetch_tags(){
 
     withCredentials([
-        [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'GIT_ACCESS', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
             ]){     
                 sh """(
                         git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
@@ -187,7 +187,7 @@ def fetch_tags(){
 
 def tag_build(){
         withCredentials([
-            [$class: 'UsernamePasswordMultiBinding', credentialsId: '83aa9347-b473-4a44-8397-8a3822630839', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
+            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'GIT_ACCESS', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'],
                 ]){     
                     sh """(
                             git remote set-url origin https://${GIT_USER}:${GIT_PASS}@bitbucket.org/cfsintnadev/app-dev-flights-ubuntu-ws.git
