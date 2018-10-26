@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mycompany</groupId>
 	<artifactId>apdev-flights-ws</artifactId>
-    <version>${build.version}-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>mule</packaging>
 	<name>Mule apdev-flights-ws Application</name>
 
