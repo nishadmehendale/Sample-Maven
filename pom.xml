@@ -16,21 +16,11 @@
     	<mule.tools.version>1.2</mule.tools.version>
 	<munit.version>1.2.0</munit.version>
     <mule.munit.support.version>3.8.0</mule.munit.support.version>
-        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-  <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
  
   	<sonar.sources>src/main/app</sonar.sources>
 
     </properties>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>${artifactory_name}</name>
-            <url>${artifactory_url}</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
 
 
 	<build>
